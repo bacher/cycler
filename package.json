@@ -1,0 +1,30 @@
+{
+  "name": "forrer",
+  "version": "0.0.0",
+  "description": "Transform forEach cycles into for",
+  "main": "src/forrer.js",
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Bacher/forrer.git"
+  },
+  "keywords": [
+    "code",
+    "optimization",
+    "js",
+    "for",
+    "forEach"
+  ],
+  "author": "Bacher <bacherko@gmail.com>",
+  "license": "GPL v2",
+  "bugs": {
+    "url": "https://github.com/Bacher/forrer/issues"
+  },
+  "homepage": "https://github.com/Bacher/forrer"
+}
