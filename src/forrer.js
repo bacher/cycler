@@ -134,7 +134,7 @@ function parseNode(node) {
                     var lines = functionBody.split('\n');
 
                     for (var i = returns.length - 1; i >= 0; --i) {
-                        var retObj = returns[i]
+                        var retObj = returns[i];
                         var ret = retObj.loc;
 
                         // ####
@@ -163,7 +163,7 @@ function parseNode(node) {
                             line: ret.start.line - callbackBody.loc.start.line,
                             column: ret.start.column,
                             columnEnd: ret.end.column
-                        }
+                        };
 
                         if (pos.line === 0) {
                             pos.column = callbackBody.loc.start.column - ret.start.column;
@@ -227,29 +227,6 @@ function getFragment(loc) {
 
 function logFragment(node) {
     DEBUG && console.log(getFragment(node.loc));
-}
-
-function findAllVariableDeclarations(node) {
-    // TODO: Доработать это место.
-    var res = [];
-
-    switch (node.type) {
-        case 'ForStatement':
-            res = res.concat(findAllVariableDeclarations(node.init));
-        case 'BlockStatement':
-        case 'WhileStatement':
-            node.body.forEach(function(expr) {
-                res = res.concat(findAllVariableDeclarations(expr));
-            });
-            break;
-        case 'VariableDeclaration':
-            node.declarations.forEach(function(decl) {
-                if (decl.type === 'VariableDeclarator') {
-                    res.push(decl.id.name);
-                }
-            });
-    }
-    return res;
 }
 
 parseNode(ast);

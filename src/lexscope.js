@@ -1,6 +1,4 @@
-/**
- * @param {AstNode} node
- */
+
 module.exports.parse = function(node) {
 
     if (['FunctionExpression', 'FunctionDeclaration', 'Program'].indexOf(node.type) === -1) {
@@ -8,6 +6,7 @@ module.exports.parse = function(node) {
     }
 
     var vars = [];
+
     if (node.type === 'FunctionExpression') {
         node.params.forEach(function(param) {
             if (param.type === 'Identifier') {
@@ -30,27 +29,31 @@ module.exports.parse = function(node) {
                 node.declarations.forEach(function(decl) {
                     if (decl.id.type === 'Identifier') {
                         vars.push(decl.id.name);
-                        //console.log(decl.id.name);
                     }
                 });
                 break;
+
             case 'ForStatement':
                 findVars(node.init);
                 findVars(node.body);
                 break;
+
             case 'WhileStatement':
                 findVars(node.body);
                 break;
+
             case 'IfStatement':
                 findVars(node.consequent);
                 findVars(node.alternate);
                 break;
+
             case 'Program':
             case 'BlockStatement':
                 node.body.forEach(function(expr) {
                     findVars(expr);
                 });
                 break;
+
             case 'FunctionExpression':
                 findVars(node.body);
                 break;
