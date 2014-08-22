@@ -95,6 +95,7 @@ var parseNode = function(node) {
         case 'FunctionDeclaration':
         case 'BinaryExpression':
         case 'Identifier':
+        case 'Literal':
             break;
 
         default:

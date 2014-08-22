@@ -8,7 +8,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha test/findreturn/"
+    "test": "mocha test/findreturn/*.spec.js && mocha test/forrer/*.spec.js"
   },
   "repository": {
     "type": "git",

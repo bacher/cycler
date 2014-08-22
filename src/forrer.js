@@ -1,177 +1,174 @@
-#!/usr/bin/env node
 
-var fs = require('fs');
 var esprima = require('esprima');
 var LexScope = require('./lexscope');
 var getReturnLoc = require('./findreturn.js');
 
 var DEBUG = false;
 
-var fileName = process.argv[process.argv.length - 1];
+module.exports = function(code) {
 
-var code = fs.readFileSync(fileName).toString();
-var codeLines = code.split('\n');
-codeLines.unshift('');
+    var codeLines = code.split('\n');
+    codeLines.unshift('');
 
-var lastSavedLoc = { line: 1, column: 0 };
+    var lastSavedLoc = { line: 1, column: 0 };
 
-var outputFile = '';
+    var outputFile = '';
 
-var ast = esprima.parse(code, {
-    loc: true,
-    raw: true
-});
+    var ast = esprima.parse(code, {
+        loc: true,
+        raw: true
+    });
 
-var lexScopesStack = [];
+    var lexScopesStack = [];
 
-function parseNode(node) {
-    if (!node) {
-        return;
-    }
+    function parseNode(node) {
+        if (!node) {
+            return;
+        }
 
-    switch (node.type) {
-        case 'Program':
-            // Глобальный скоуп
-            lexScopesStack.push(LexScope.parse(node));
-        case 'ForStatement':
-        case 'WhileStatement':
-        case 'BlockStatement':
-            [].concat(node.body).forEach(function(node) {
-                parseNode(node);
-            });
-            break;
-        case 'CallExpression':
-            node.arguments.forEach(function(el) {
-                parseNode(el);
-            });
-            if (node.callee.type === 'FunctionExpression') {
-                parseNode(node.callee.body);
-            }
-            break;
-        case 'VariableDeclaration':
-            node.declarations.forEach(function(el) {
-                parseNode(el);
-            });
-            break;
-        case 'VariableDeclarator':
-            parseNode(node.init);
-            break;
-        case 'AssignmentExpression':
-            parseNode(node.right);
-            break;
-        case 'FunctionExpression':
-        case 'FunctionDeclaration':
-            lexScopesStack.push(LexScope.parse(node));
+        switch (node.type) {
+            case 'Program':
+                // Глобальный скоуп
+                lexScopesStack.push(LexScope.parse(node));
+            case 'ForStatement':
+            case 'WhileStatement':
+            case 'BlockStatement':
+                [].concat(node.body).forEach(function(node) {
+                    parseNode(node);
+                });
+                break;
+            case 'CallExpression':
+                node.arguments.forEach(function(el) {
+                    parseNode(el);
+                });
+                if (node.callee.type === 'FunctionExpression') {
+                    parseNode(node.callee.body);
+                }
+                break;
+            case 'VariableDeclaration':
+                node.declarations.forEach(function(el) {
+                    parseNode(el);
+                });
+                break;
+            case 'VariableDeclarator':
+                parseNode(node.init);
+                break;
+            case 'AssignmentExpression':
+                parseNode(node.right);
+                break;
+            case 'FunctionExpression':
+            case 'FunctionDeclaration':
+                lexScopesStack.push(LexScope.parse(node));
 
-            parseNode(node.body);
+                parseNode(node.body);
 
-            lexScopesStack.pop();
-            break;
-        case 'ObjectExpression':
-            node.properties.forEach(function(prop) {
-                parseNode(prop);
-            });
-            break;
-        case 'Property':
-            parseNode(node.value);
-            break;
-        case 'ExpressionStatement':
-            var expr = node.expression;
+                lexScopesStack.pop();
+                break;
+            case 'ObjectExpression':
+                node.properties.forEach(function(prop) {
+                    parseNode(prop);
+                });
+                break;
+            case 'Property':
+                parseNode(node.value);
+                break;
+            case 'ExpressionStatement':
+                var expr = node.expression;
 
-            if (expr.type === 'CallExpression') {
-                var callee = expr.callee;
+                if (expr.type === 'CallExpression') {
+                    var callee = expr.callee;
 
-                if (callee.type === 'MemberExpression'
-                    && callee.property.name === 'forEach'
-                    && expr.arguments.length === 1
-                    && expr.arguments[0].type === 'FunctionExpression'
-                ) {
+                    if (callee.type === 'MemberExpression'
+                        && callee.property.name === 'forEach'
+                        && expr.arguments.length === 1
+                        && expr.arguments[0].type === 'FunctionExpression'
+                        ) {
 
-                    if (processForEach(node, expr, callee)) {
-                        return;
+                        if (processForEach(node, expr, callee)) {
+                            return;
+                        }
                     }
                 }
-            }
 
-            parseNode(expr);
-            break;
-    }
-}
-
-function getFragment(loc) {
-    var toEnd = (loc.end === 'EOF');
-
-    var line1 = loc.start.line;
-    var line2 = toEnd ? codeLines.length - 1 : loc.end.line;
-
-    var col1 = loc.start.column;
-    var col2 = toEnd ? codeLines[line2].length : loc.end.column;
-
-    var fragment = '';
-
-    if (line1 === line2) {
-        fragment = codeLines[line1].substring(col1, col2);
-    } else {
-        fragment = codeLines[line1].substring(col1) + '\n';
-
-        for (var line = line1 + 1; line < line2; ++line) {
-            fragment += codeLines[line] + '\n';
+                parseNode(expr);
+                break;
         }
-        fragment += codeLines[line2].substring(0, col2);
     }
 
-    return fragment;
-}
+    function getFragment(loc) {
+        var toEnd = (loc.end === 'EOF');
 
-function processForEach(node, expr, callee) {
-    logFragment(node);
-    logFragment(expr);
-    logFragment(callee);
+        var line1 = loc.start.line;
+        var line2 = toEnd ? codeLines.length - 1 : loc.end.line;
 
-    var callback = expr.arguments[0];
-    var callbackIterVar = callback.params[0].name;
+        var col1 = loc.start.column;
+        var col2 = toEnd ? codeLines[line2].length : loc.end.column;
 
-    var callbackBody = callback.body;
+        var fragment = '';
 
-    logFragment(callbackBody);
+        if (line1 === line2) {
+            fragment = codeLines[line1].substring(col1, col2);
+        } else {
+            fragment = codeLines[line1].substring(col1) + '\n';
 
-    var arrayIdentifier = getFragment(callee.object.loc);
+            for (var line = line1 + 1; line < line2; ++line) {
+                fragment += codeLines[line] + '\n';
+            }
+            fragment += codeLines[line2].substring(0, col2);
+        }
 
-    var cycleScope = LexScope.parse(callback);
-
-    var localScope = lexScopesStack[lexScopesStack.length - 1];
-
-    var intesect = localScope.filter(function(variable) {
-        return cycleScope.indexOf(variable) !== -1;
-    });
-
-    if (intesect.length) {
-        return;
+        return fragment;
     }
 
-    var allScopesVars = [];
-    lexScopesStack.forEach(function(scope) {
-        allScopesVars = allScopesVars.concat(scope);
-    });
-    allScopesVars = allScopesVars.concat(cycleScope);
+    function processForEach(node, expr, callee) {
+        logFragment(node);
+        logFragment(expr);
+        logFragment(callee);
 
-    var iter = '_i';
-    while (allScopesVars.indexOf(iter) !== -1) {
-        iter = '_' + iter;
-    }
+        var callback = expr.arguments[0];
+        var callbackIterVar = callback.params[0].name;
 
-    var returns = getReturnLoc(expr.arguments[0].body);
+        var callbackBody = callback.body;
 
-    var functionBody = getFragment(callbackBody.loc).substring(1);
-    var lines = functionBody.split('\n');
+        logFragment(callbackBody);
 
-    for (var i = returns.length - 1; i >= 0; --i) {
-        var retObj = returns[i];
-        var ret = retObj.loc;
+        var arrayIdentifier = getFragment(callee.object.loc);
 
-        var args = '';
+        var cycleScope = LexScope.parse(callback);
 
-        if (retObj.args) {
+        var localScope = lexScopesStack[lexScopesStack.length - 1];
+
+        var intesect = localScope.filter(function(variable) {
+            return cycleScope.indexOf(variable) !== -1;
+        });
+
+        if (intesect.length) {
+            return;
+        }
+
+        var allScopesVars = [];
+        lexScopesStack.forEach(function(scope) {
+            allScopesVars = allScopesVars.concat(scope);
+        });
+        allScopesVars = allScopesVars.concat(cycleScope);
+
+        var iter = '_i';
+        while (allScopesVars.indexOf(iter) !== -1) {
+            iter = '_' + iter;
+        }
+
+        var returns = getReturnLoc(expr.arguments[0].body);
+
+        var functionBody = getFragment(callbackBody.loc).substring(1);
+        var lines = functionBody.split('\n');
+
+        for (var i = returns.length - 1; i >= 0; --i) {
+            var retObj = returns[i];
+            var ret = retObj.loc;
+
+            var args = '';
+
+            if (retObj.args) {
 //            var posArg = {
 //                line: argsLoc.start.line - callbackBody.loc.start.line,
 //                lineEnd: argsLoc.end.line - callbackBody.loc.end.line,
@@ -184,56 +181,54 @@ function processForEach(node, expr, callee) {
 //                posArg.columnEnd = callbackBody.loc.start.column - argsLoc.end.column;
 //            }
 
-            args = getFragment(retObj.args) + ';';
+                args = getFragment(retObj.args) + ';';
+            }
+
+            var pos = {
+                line: ret.start.line - callbackBody.loc.start.line,
+                column: ret.start.column,
+                columnEnd: ret.end.column
+            };
+
+            if (pos.line === 0) {
+                pos.column = callbackBody.loc.start.column - ret.start.column;
+                pos.columnEnd = callbackBody.loc.start.column - ret.end.column;
+            }
+
+            var origLine = lines[pos.line];
+
+            lines[pos.line] = args + origLine.substr(0, pos.column) + 'continue' + origLine.substr(pos.columnEnd - 1);
         }
 
-        var pos = {
-            line: ret.start.line - callbackBody.loc.start.line,
-            column: ret.start.column,
-            columnEnd: ret.end.column
-        };
+        functionBody = lines.join('\n');
 
-        if (pos.line === 0) {
-            pos.column = callbackBody.loc.start.column - ret.start.column;
-            pos.columnEnd = callbackBody.loc.start.column - ret.end.column;
-        }
+        var res =
+            'for(var ' + iter + '=0,' + callbackIterVar + ';' + iter + '<' + arrayIdentifier + '.length;++' + iter + ')' +
+            '{' + callbackIterVar + '=' + arrayIdentifier + '[' + iter + '];';
+        res += functionBody;
 
-        var origLine = lines[pos.line];
+        outputFile += getFragment({
+            start: lastSavedLoc,
+            end: node.loc.start
+        });
 
-        var newLine = args + origLine.substr(0, pos.column) + 'continue' + origLine.substr(pos.columnEnd - 1);
+        outputFile += res;
 
-        lines[pos.line] = newLine;
+        lastSavedLoc = node.loc.end;
+
+        return true;
     }
 
-    functionBody = lines.join('\n');
+    function logFragment(node) {
+        DEBUG && console.log(getFragment(node.loc));
+    }
 
-    var res =
-        'for(var '+iter+'=0,'+callbackIterVar+';'+iter+'<'+arrayIdentifier+'.length;++'+iter+')' +
-        '{'+callbackIterVar+'='+arrayIdentifier+'['+iter+'];';
-    res += functionBody;
+    parseNode(ast);
 
     outputFile += getFragment({
         start: lastSavedLoc,
-        end: node.loc.start
+        end: 'EOF'
     });
 
-    outputFile += res;
-
-    lastSavedLoc = node.loc.end;
-
-    return true;
-}
-
-function logFragment(node) {
-    DEBUG && console.log(getFragment(node.loc));
-}
-
-parseNode(ast);
-
-outputFile += getFragment({
-    start: lastSavedLoc,
-    end: 'EOF'
-});
-
-DEBUG && console.log('==== RESULT ====');
-console.log(outputFile);
+    return outputFile
+};
