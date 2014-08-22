@@ -19,7 +19,7 @@ var code = 'arr.forEach(function(a) { console.log(a); });'
 console.log(forrer(code));
 ````
 
-#### Преобразования выглядят примерно так:
+#### Transformation look like this:
 
 ````javascript
 arr.forEach(function(a) { console.log(a); });
