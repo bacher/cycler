@@ -107,6 +107,7 @@ var parseNode = function(node) {
         case 'ArrayExpression':
         case 'Identifier':
         case 'Literal':
+        case 'UnaryExpression':
             break;
 
         default:
