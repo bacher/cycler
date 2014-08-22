@@ -181,11 +181,12 @@ module.exports = function(code) {
 //                posArg.columnEnd = callbackBody.loc.start.column - argsLoc.end.column;
 //            }
 
-                args = getFragment(retObj.args) + ';';
+                args = '(' + getFragment(retObj.args) + ');';
             }
 
             var pos = {
                 line: ret.start.line - callbackBody.loc.start.line,
+                lineEnd: ret.end.line - callbackBody.loc.start.line,
                 column: ret.start.column,
                 columnEnd: ret.end.column
             };
@@ -197,7 +198,17 @@ module.exports = function(code) {
 
             var origLine = lines[pos.line];
 
-            lines[pos.line] = args + origLine.substr(0, pos.column) + 'continue' + origLine.substr(pos.columnEnd - 1);
+            var newLine = args + origLine.substr(0, pos.column) + 'continue;';
+
+            if (pos.line === pos.lineEnd) {
+                newLine += lines[pos.lineEnd].substr(pos.columnEnd - 1);
+            }
+
+            lines[pos.line] = newLine;
+
+            for (var j = pos.line + 1; j <= pos.lineEnd; ++j) {
+                lines[j] = '';
+            }
         }
 
         functionBody = lines.join('\n');

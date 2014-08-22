@@ -84,7 +84,8 @@ var parseNode = function(node) {
 
             if (node.argument) {
                 if (node.argument.arguments && node.argument.arguments.length ||
-                    node.argument.type === 'Literal') {
+                    node.argument.type === 'Literal' ||
+                    node.argument.type === 'ObjectExpression') {
 
                     res.args = node.argument.loc
                 }

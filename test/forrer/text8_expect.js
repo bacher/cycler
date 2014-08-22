@@ -4,7 +4,11 @@
         console.log(1);
 
         if (el) {
-            continue;
+({
+                aaa: console.log(3)
+            });            continue;
+
+
         }
 
         console.log(2);
