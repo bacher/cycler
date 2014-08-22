@@ -1,7 +1,7 @@
 
 var _ = require('lodash');
 
- function parse(node) {
+function parse(node) {
 
     if (!_.contains(['Program', 'FunctionExpression', 'FunctionDeclaration'], node.type)) {
         throw new Error('Node has not lexical scope');
@@ -28,6 +28,14 @@ var _ = require('lodash');
             return;
         }
 
+        if (Array.isArray(node)) {
+            node.forEach(function(el) {
+                findVars(el);
+            });
+
+            return;
+        }
+
         level++;
 
         if (parse.verbose) {
@@ -35,11 +43,13 @@ var _ = require('lodash');
         }
 
         switch (node.type) {
+            case 'Identifier':
+                vars.push(node.name);
+                break;
+
             case 'VariableDeclaration':
                 node.declarations.forEach(function(decl) {
-                    if (decl.id.type === 'Identifier') {
-                        vars.push(decl.id.name);
-                    }
+                    findVars(decl.id);
                 });
                 break;
 
@@ -72,13 +82,49 @@ var _ = require('lodash');
                 findVars(node.expression);
                 break;
 
+            case 'TryStatement':
+                findVars(node.block);
+                findVars(node.handlers);
+                findVars(node.finalizer);
+                break;
+
+            case 'CatchClause':
+                findVars(node.param);
+                findVars(node.body);
+                break;
+
+            case 'FunctionDeclaration':
+                findVars(node.id);
+                break;
+
+            case 'SwitchStatement':
+                findVars(node.cases);
+                break;
+
+            case 'SwitchCase':
+                findVars(node.consequent);
+                break;
+
+            case 'ForInStatement':
+                findVars(node.left);
+                findVars(node.body);
+                break;
+
             case 'CallExpression':
             case 'ReturnStatement':
             case 'AssignmentExpression':
+            case 'Literal':
+            case 'UnaryExpression':
+            case 'ThrowStatement':
+            case 'BreakStatement':
                 break;
 
             default:
-                console.log('[Lex: Unknown node]', node.type);
+                if (node.type) {
+                    console.warn('[LEX: Unknown node type]', node.type);
+                } else {
+                    console.warn('[LEX: Unknown node]', node);
+                }
         }
 
         level--;

@@ -13,6 +13,14 @@ var parseNode = function(node) {
         debugger
     }
 
+    if (Array.isArray(node)) {
+        node.forEach(function(el) {
+            res.push(parseNode(el));
+        });
+
+        return;
+    }
+
     if (findReturn.verbose) {
         console.log('*', new Array(level * 2).join(' '), node.type);
     }
@@ -95,12 +103,18 @@ var parseNode = function(node) {
         case 'FunctionExpression':
         case 'FunctionDeclaration':
         case 'BinaryExpression':
+        case 'MemberExpression':
+        case 'ArrayExpression':
         case 'Identifier':
         case 'Literal':
             break;
 
         default:
-            console.warn('[Unknown block]', node);
+            if (node.type) {
+                console.warn('[FINDRETURN: Unknown node type]', node.type);
+            } else {
+                console.warn('[FINDRETURN: Unknown node]', node);
+            }
     }
 
     level--;

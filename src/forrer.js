@@ -39,30 +39,31 @@ module.exports = function(code) {
             return;
         }
 
+        if (Array.isArray(node)) {
+            node.forEach(function(el) {
+                parseNode(el);
+            });
+
+            return;
+        }
+
         switch (node.type) {
             case 'Program':
-                // Глобальный скоуп
+                // Глобальный скоп
                 lexScopesStack.push(LexScope.parse(node));
             case 'ForStatement':
             case 'WhileStatement':
             case 'BlockStatement':
-                [].concat(node.body).forEach(function(node) {
-                    parseNode(node);
-                });
+                parseNode(node.body);
                 break;
 
             case 'CallExpression':
-                node.arguments.forEach(function(el) {
-                    parseNode(el);
-                });
-
+                parseNode(node.arguments);
                 parseNode(node.callee);
                 break;
 
             case 'VariableDeclaration':
-                node.declarations.forEach(function(el) {
-                    parseNode(el);
-                });
+                parseNode(node.declarations);
                 break;
 
             case 'VariableDeclarator':
@@ -70,6 +71,9 @@ module.exports = function(code) {
                 break;
 
             case 'AssignmentExpression':
+            case 'LogicalExpression':
+            case 'BinaryExpression':
+                parseNode(node.left);
                 parseNode(node.right);
                 break;
 
@@ -83,9 +87,7 @@ module.exports = function(code) {
                 break;
 
             case 'ObjectExpression':
-                node.properties.forEach(function(prop) {
-                    parseNode(prop);
-                });
+                parseNode(node.properties);
                 break;
 
             case 'Property':
@@ -93,41 +95,113 @@ module.exports = function(code) {
                 break;
 
             case 'ExpressionStatement':
-
-                var expr = node.expression;
-
-                if (expr.type === 'CallExpression') {
-                    var callee = expr.callee;
-
-                    if (callee.type === 'MemberExpression'
-                        && callee.property.name === 'forEach'
-                        && expr.arguments.length === 1
-                        && expr.arguments[0].type === 'FunctionExpression'
-                        ) {
-
-                        if (processForEach(node, expr, callee)) {
-                            return;
-                        }
-                    }
+                if (!checkForEach(node)) {
+                    parseNode(node.expression);
                 }
-
-                parseNode(expr);
                 break;
+
+            case 'MemberExpression':
+                parseNode(node.object);
+                break;
+
+            case 'IfStatement':
+                parseNode(node.test);
+                parseNode(node.consequent);
+                parseNode(node.alternate);
+                break;
+
+            case 'UnaryExpression':
+            case 'ReturnStatement':
+                parseNode(node.argument);
+                break;
+
+            case 'ThisExpression':
+            case 'Identifier':
+            case 'Literal':
+                break;
+
+            case 'ArrayExpression':
+                parseNode(node.elements);
+                break;
+
+            case 'ConditionalExpression':
+                parseNode(node.test);
+                parseNode(node.left);
+                parseNode(node.right);
+                break;
+
+            case 'TryStatement':
+                parseNode(node.block);
+                parseNode(node.handlers);
+                parseNode(node.finalizer);
+                break;
+
+            case 'CatchClause':
+                parseNode(node.param);
+                parseNode(node.body);
+                break;
+
+            case 'ForInStatement':
+                parseNode(node.left);
+                parseNode(node.right);
+                parseNode(node.body);
+                break;
+
+            case 'SwitchStatement':
+                parseNode(node.discriminant);
+                parseNode(node.cases);
+                break;
+
+            case 'SwitchCase':
+                parseNode(node.consequent);
+                break;
+
+            case 'NewExpression':
+                parseNode(node.callee);
+                parseNode(node.arguments);
+                break;
+
+            case 'ThrowStatement':
+                parseNode(node.argument);
+                break;
+
+            case 'BreakStatement':
+                break;
+
+            default:
+                console.warn('[FORRER: Unknown node]', node.type);
+        }
+    }
+
+    function checkForEach(node) {
+        var expr = node.expression;
+
+        if (expr.type === 'CallExpression') {
+            var callee = expr.callee;
+
+            if (callee.type === 'MemberExpression'
+                && callee.property.name === 'forEach'
+                && expr.arguments.length === 1
+                && expr.arguments[0].type === 'FunctionExpression'
+                ) {
+
+                return processForEach(node, expr, callee);
+            }
         }
     }
 
     function processForEach(node, expr, callee) {
 
-        logFragment(node);
-        logFragment(expr);
-        logFragment(callee);
+        //logFragment(node);
+        logFragment('expr', expr);
+        logFragment('callee', callee);
 
         var callback = expr.arguments[0];
         var callbackIterVar = callback.params[0].name;
 
         var callbackBody = callback.body;
 
-        logFragment(callbackBody);
+        logFragment('funcbody', callbackBody);
 
         var arrayIdentifier = getFragment(codeLines, callee.object.loc);
 
@@ -135,19 +209,11 @@ module.exports = function(code) {
 
         var localScope = _.last(lexScopesStack);
 
-        var intesect = localScope.filter(function(variable) {
-            return cycleScope.indexOf(variable) !== -1;
-        });
-
-        if (intesect.length) {
+        if (_.intersection(localScope, cycleScope).length) {
             return;
         }
 
-        var allScopesVars = [];
-        lexScopesStack.forEach(function(scope) {
-            allScopesVars = allScopesVars.concat(scope);
-        });
-        allScopesVars = allScopesVars.concat(cycleScope);
+        var allScopesVars = _.flatten(lexScopesStack).concat(cycleScope);
 
         var iter = '_i';
         while (allScopesVars.indexOf(iter) !== -1) {
@@ -159,13 +225,12 @@ module.exports = function(code) {
             arrayAlias = '_' + arrayAlias;
         }
 
-        var returns = getReturnLoc(expr.arguments[0].body);
+        var returns = getReturnLoc(callback.body);
 
         var functionBody = getFragment(codeLines, callbackBody.loc).substring(1);
         var lines = functionBody.split('\n');
 
-        for (var i = returns.length - 1; i >= 0; --i) {
-            var retObj = returns[i];
+        _.forEachRight(returns, function(retObj) {
             var ret = retObj.loc;
 
             var args = '';
@@ -199,7 +264,7 @@ module.exports = function(code) {
             for (var j = pos.line + 1; j <= pos.lineEnd; ++j) {
                 lines[j] = '';
             }
-        }
+        });
 
         functionBody = lines.join('\n');
 
@@ -220,8 +285,14 @@ module.exports = function(code) {
         return true;
     }
 
-    function logFragment(node) {
-        DEBUG && console.log(getFragment(codeLines, node.loc));
+    function logFragment(label, node) {
+        if (DEBUG) {
+            if (typeof label === 'string') {
+                console.warn('[' + label + ']', getFragment(codeLines, node.loc));
+            } else {
+                console.warn(getFragment(codeLines, label.loc));
+            }
+        }
     }
 
     parseNode(ast);
