@@ -1,4 +1,5 @@
 
+require('colors');
 var _ = require('lodash');
 var esprima = require('esprima');
 var FragUtils = require('./fragutils');
@@ -18,10 +19,18 @@ module.exports = function(code) {
 
     var outputFile = '';
 
-    var ast = esprima.parse(code, {
-        loc: true,
-        raw: true
-    });
+    var ast;
+
+    try {
+        ast = esprima.parse(code, {
+            loc: true,
+            raw: true
+        });
+    } catch(e) {
+        console.warn('  [PARSE ERROR]'.red);
+        console.warn('    Error:'.red, e.message.red);
+        process.exit(1);
+    }
 
     var lexScopesStack = [];
 
@@ -145,6 +154,11 @@ module.exports = function(code) {
             iter = '_' + iter;
         }
 
+        var arrayAlias = '_m';
+        while (allScopesVars.indexOf(arrayAlias) !== -1) {
+            arrayAlias = '_' + arrayAlias;
+        }
+
         var returns = getReturnLoc(expr.arguments[0].body);
 
         var functionBody = getFragment(codeLines, callbackBody.loc).substring(1);
@@ -190,8 +204,8 @@ module.exports = function(code) {
         functionBody = lines.join('\n');
 
         var res =
-            'for(var ' + iter + '=0,' + callbackIterVar + ';' + iter + '<' + arrayIdentifier + '.length;++' + iter + ')' +
-            '{' + callbackIterVar + '=' + arrayIdentifier + '[' + iter + '];';
+            'for(var ' + iter + '=0,' + callbackIterVar + ',' + arrayAlias + '=' + arrayIdentifier + ';' + iter + '<' + arrayAlias + '.length;++' + iter + ')' +
+            '{' + callbackIterVar + '=' + arrayAlias + '[' + iter + '];';
         res += functionBody;
 
         outputFile += getFragment(codeLines, {

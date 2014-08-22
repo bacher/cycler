@@ -1,6 +1,6 @@
 
 (function() {
-    for(var _i=0,el;_i<window.arr.length;++_i){el=window.arr[_i];
+    for(var _i=0,el,_m=window.arr;_i<_m.length;++_i){el=_m[_i];
         console.log(1);
 
         if (el) {
@@ -15,3 +15,4 @@
     }
 
 })();
+

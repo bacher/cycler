@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/Bacher/forrer",
   "dependencies": {
+    "colors": "^0.6.2",
     "esprima": "^1.2.2",
     "lodash": "^2.4.1"
   },
