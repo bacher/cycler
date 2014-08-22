@@ -1,11 +1,14 @@
 
-module.exports.parse = function(node) {
+var _ = require('lodash');
 
-    if (['FunctionExpression', 'FunctionDeclaration', 'Program'].indexOf(node.type) === -1) {
+ function parse(node) {
+
+    if (!_.contains(['Program', 'FunctionExpression', 'FunctionDeclaration'], node.type)) {
         throw new Error('Node has not lexical scope');
     }
 
     var vars = [];
+    var level = 0;
 
     if (node.type === 'FunctionExpression') {
         node.params.forEach(function(param) {
@@ -17,11 +20,18 @@ module.exports.parse = function(node) {
 
     findVars(node);
 
+
     return vars;
 
     function findVars(node) {
         if (!node) {
             return;
+        }
+
+        level++;
+
+        if (parse.verbose) {
+            console.log(new Array(level).join('  '), node.type);
         }
 
         switch (node.type) {
@@ -57,6 +67,22 @@ module.exports.parse = function(node) {
             case 'FunctionExpression':
                 findVars(node.body);
                 break;
+
+            case 'ExpressionStatement':
+                findVars(node.expression);
+                break;
+
+            case 'CallExpression':
+            case 'ReturnStatement':
+            case 'AssignmentExpression':
+                break;
+
+            default:
+                console.log('[Lex: Unknown node]', node.type);
         }
+
+        level--;
     }
-};
+}
+
+module.exports.parse = parse;

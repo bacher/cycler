@@ -6,7 +6,7 @@
         if (el) {
 ({
                 aaa: console.log(3)
-            });            continue;
+            });            continue
 
 
         }
