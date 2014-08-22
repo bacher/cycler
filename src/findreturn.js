@@ -94,10 +94,11 @@ var parseNode = function(node) {
         case 'FunctionExpression':
         case 'FunctionDeclaration':
         case 'BinaryExpression':
+        case 'Identifier':
             break;
 
         default:
-            console.warn('Unknown block', node);
+            console.warn('[Unknown block]', node);
     }
 
     level--;
