@@ -1,0 +1,24 @@
+#!/usr/bin/env node
+
+var fs = require('fs');
+var argv = require('optimist').argv;
+var forrer = require('./src/forrer');
+
+if (argv._.length) {
+    var code = fs.readFileSync(argv._[0]).toString();
+
+    var newCode = forrer(code);
+
+    if (argv.o) {
+        fs.writeFileSync(argv.o, newCode);
+    } else {
+        console.log(newCode);
+    }
+} else {
+    console.log([
+        'forrer: invalid option',
+        "Usage: forrer [-o 'output-file'] 'input-file'",
+        '',
+        "    If `-o' parameter not specified output will put in standard output."
+    ].join('\n'));
+}

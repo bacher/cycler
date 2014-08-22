@@ -2,14 +2,14 @@
   "name": "forrer",
   "version": "0.0.0",
   "description": "Transform forEach cycles into for",
-  "main": "src/forrer.js",
+  "main": "forrer",
   "directories": {
     "example": "examples",
     "test": "test"
   },
   "scripts": {
     "test": "mocha test/findreturn/*.spec.js && mocha test/forrer/*.spec.js",
-    "make-diffs": "./examples/make-diffs.sh"
+    "make-diffs": "./make-diffs.sh"
   },
   "repository": {
     "type": "git",
@@ -31,7 +31,8 @@
   "dependencies": {
     "colors": "^0.6.2",
     "esprima": "^1.2.2",
-    "lodash": "^2.4.1"
+    "lodash": "^2.4.1",
+    "optimist": "^0.6.1"
   },
   "devDependencies": {
     "mocha": "^1.21.4"
