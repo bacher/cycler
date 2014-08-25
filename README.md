@@ -1,7 +1,7 @@
 forrer
 ======
 
-CLI/Node program for transforming **forEach** methods into cycles **for**.
+CLI/Node program for **safe (based of AST tree)** transforming **"forEach"** methods into **"for"** cycles.
 
 ### Usage:
 
