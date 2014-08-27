@@ -4,7 +4,22 @@ var fs = require('fs');
 var argv = require('optimist').argv;
 var forrer = require('./src/forrer');
 
-if (argv._.length) {
+if (argv.help) {
+
+    // Help
+
+    console.log([
+        'forrer: HELP',
+        "Usage: forrer [-o 'output-file'] 'input-file'",
+        '       or pipe mode',
+        '',
+        "    If `-o' parameter not specified output will put in standard output."
+    ].join('\n'));
+
+} else if (argv._.length) {
+
+    // Command line arguments mode
+
     var code = fs.readFileSync(argv._[0]).toString();
 
     var newCode = forrer(code);
@@ -12,13 +27,24 @@ if (argv._.length) {
     if (argv.o) {
         fs.writeFileSync(argv.o, newCode);
     } else {
-        console.log(newCode);
+        process.stdout.write(newCode);
     }
 } else {
-    console.log([
-        'forrer: invalid option',
-        "Usage: forrer [-o 'output-file'] 'input-file'",
-        '',
-        "    If `-o' parameter not specified output will put in standard output."
-    ].join('\n'));
+
+    // Pipe mode
+
+    var codeChunks = [];
+
+    process.stdin.on('readable', function() {
+        var chunk = process.stdin.read();
+        if (chunk !== null) {
+            codeChunks.push(chunk);
+        }
+    });
+
+    process.stdin.on('end', function() {
+        var code = codeChunks.join('');
+        process.stdout.write(forrer(code));
+
+    });
 }
