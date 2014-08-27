@@ -21,6 +21,7 @@ describe('simple cases', function() {
 describe('ignore cases', function() {
 
     makeTest(20);
+    makeTest(21);
 
 });
 

@@ -20,7 +20,6 @@ function parse(node) {
 
     findVars(node);
 
-
     return vars;
 
     function findVars(node) {
@@ -69,9 +68,7 @@ function parse(node) {
 
             case 'Program':
             case 'BlockStatement':
-                node.body.forEach(function(expr) {
-                    findVars(expr);
-                });
+                findVars(node.body);
                 break;
 
             case 'FunctionExpression':

@@ -5,6 +5,7 @@ var esprima = require('esprima');
 var FragUtils = require('./fragutils');
 var LexScope = require('./lexscope');
 var getReturnLoc = require('./findreturn');
+var findLocal = require('./findlocal');
 
 var getFragment = FragUtils.getFragment;
 
@@ -210,6 +211,10 @@ module.exports = function(code) {
         var localScope = _.last(lexScopesStack);
 
         if (_.intersection(localScope, cycleScope).length) {
+            return;
+        }
+
+        if (findLocal.parse(callback, 'ThisExpression').length) {
             return;
         }
 
