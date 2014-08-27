@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ./forrer examples/abook.js > examples/abook_.js &&
 diff examples/abook.js examples/abook_.js > examples/abook.diff

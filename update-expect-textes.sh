@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ./forrer test/forrer/text1.js > test/forrer/text1_expect.js &&
 ./forrer test/forrer/text2.js > test/forrer/text2_expect.js &&
