@@ -8,6 +8,7 @@
 ./forrer test/forrer/text6.js > test/forrer/text6_expect.js &&
 ./forrer test/forrer/text7.js > test/forrer/text7_expect.js &&
 ./forrer test/forrer/text8.js > test/forrer/text8_expect.js &&
+./forrer test/forrer/text9.js > test/forrer/text9_expect.js &&
 
 ./forrer test/forrer/text20.js > test/forrer/text20_expect.js &&
 ./forrer test/forrer/text21.js > test/forrer/text21_expect.js &&

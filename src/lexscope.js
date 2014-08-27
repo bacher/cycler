@@ -114,6 +114,8 @@ function parse(node) {
             case 'UnaryExpression':
             case 'ThrowStatement':
             case 'BreakStatement':
+            case 'ContinueStatement':
+            case 'ObjectExpression':
                 break;
 
             default:

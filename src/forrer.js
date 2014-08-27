@@ -12,6 +12,21 @@ var getFragment = FragUtils.getFragment;
 var DEBUG = false;
 
 module.exports = function(code) {
+    var res = {
+        code: code,
+        isChanged: true
+    };
+
+    while (res.isChanged) {
+        res = processCode(res.code);
+    }
+
+    return res.code;
+};
+
+function processCode(code) {
+
+    var isChanged = false;
 
     var codeLines = code.split('\n');
     codeLines.unshift('');
@@ -166,11 +181,12 @@ module.exports = function(code) {
                 parseNode(node.argument);
                 break;
 
+            case 'ContinueStatement':
             case 'BreakStatement':
                 break;
 
             default:
-                console.warn('[FORRER: Unknown node]', node.type);
+                console.warn('[FORRER: Unknown node type]', node.type);
         }
     }
 
@@ -299,6 +315,8 @@ module.exports = function(code) {
 
         lastSavedLoc = node.loc.end;
 
+        isChanged = true;
+
         return true;
     }
 
@@ -319,5 +337,8 @@ module.exports = function(code) {
         end: 'EOF'
     });
 
-    return outputFile
-};
+    return {
+        code: outputFile,
+        isChanged: isChanged
+    };
+}

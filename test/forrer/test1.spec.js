@@ -15,6 +15,7 @@ describe('simple cases', function() {
     makeTest(6);
     makeTest(7);
     makeTest(8);
+    makeTest(9);
 
 });
 
