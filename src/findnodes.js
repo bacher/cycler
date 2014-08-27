@@ -2,8 +2,15 @@
 var _ = require('lodash');
 
 /**
+ * @typedef {Object} ASTNode
+ * @property {string} type
+ * @property {Object} [loc]
+ * @property {Object|Array} * specific node fields
+ */
+
+/**
  * Ищет вхождения нод с задаными типами.
- * @param {ASTNode} node
+ * @param {ASTNode} rootNode
  * @param {[string]|string} types
  * @param {Object} [options]
  * @param {boolean} [options.localScope=false]
