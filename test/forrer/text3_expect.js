@@ -6,4 +6,3 @@ for(var __i=0,el,_m=list;__i<_m.length;++__i){el=_m[__i];
     var _i = 0;
     console.log(el, tt, t, _i);
 }
-

@@ -4,4 +4,3 @@ a = {
             console.log(el);
         }}
 };
-
