@@ -9,7 +9,7 @@ var _ = require('lodash');
  * @param {boolean} [options.localScope=false]
  * @return {Array}
  */
-function parse(node, types, options) {
+function parse(rootNode, types, options) {
     options = options || {};
 
     if (!Array.isArray(types)) {
@@ -17,7 +17,7 @@ function parse(node, types, options) {
     }
 
     if (options.localScope) {
-        if (!_.contains(['Program', 'FunctionExpression', 'FunctionDeclaration'], node.type)) {
+        if (!_.contains(['Program', 'FunctionExpression', 'FunctionDeclaration'], rootNode.type)) {
             throw new Error('Node has not lexical scope');
         }
     }
@@ -25,7 +25,7 @@ function parse(node, types, options) {
     var vars = [];
     var level = 0;
 
-    findVars(node);
+    findVars(rootNode);
 
     return vars;
 
@@ -49,7 +49,7 @@ function parse(node, types, options) {
             console.log(new Array(level).join('  '), node.type);
         }
 
-        if (_.contains(types, node.type)) {
+        if (node !== rootNode && _.contains(types, node.type)) {
             vars.push(node);
         }
 
