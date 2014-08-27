@@ -1,0 +1,114 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/Users/bach/local/node/bin/node',
+1 verbose cli   '/Users/bach/local/node/bin/npm',
+1 verbose cli   'publish' ]
+2 info using npm@1.4.23
+3 info using node@v0.10.31
+4 verbose publish [ '.' ]
+5 verbose cache add [ '.', null ]
+6 verbose cache add name=undefined spec="." args=[".",null]
+7 verbose parsed url { protocol: null,
+7 verbose parsed url   slashes: null,
+7 verbose parsed url   auth: null,
+7 verbose parsed url   host: null,
+7 verbose parsed url   port: null,
+7 verbose parsed url   hostname: null,
+7 verbose parsed url   hash: null,
+7 verbose parsed url   search: null,
+7 verbose parsed url   query: null,
+7 verbose parsed url   pathname: '.',
+7 verbose parsed url   path: '.',
+7 verbose parsed url   href: '.' }
+8 silly lockFile 3a52ce78- .
+9 verbose lock . /Users/bach/.npm/3a52ce78-.lock
+10 verbose tar pack [ '/Users/bach/.npm/forrer/0.0.2/package.tgz', '.' ]
+11 verbose tarball /Users/bach/.npm/forrer/0.0.2/package.tgz
+12 verbose folder .
+13 info prepublish forrer@0.0.2
+14 silly lockFile 1f1177db-tar tar://.
+15 verbose lock tar://. /Users/bach/.npm/1f1177db-tar.lock
+16 silly lockFile 0bf482ac-ach-npm-forrer-0-0-2-package-tgz tar:///Users/bach/.npm/forrer/0.0.2/package.tgz
+17 verbose lock tar:///Users/bach/.npm/forrer/0.0.2/package.tgz /Users/bach/.npm/0bf482ac-ach-npm-forrer-0-0-2-package-tgz.lock
+18 silly lockFile 1f1177db-tar tar://.
+19 silly lockFile 1f1177db-tar tar://.
+20 silly lockFile 0bf482ac-ach-npm-forrer-0-0-2-package-tgz tar:///Users/bach/.npm/forrer/0.0.2/package.tgz
+21 silly lockFile 0bf482ac-ach-npm-forrer-0-0-2-package-tgz tar:///Users/bach/.npm/forrer/0.0.2/package.tgz
+22 silly lockFile eadc5fd2-rs-bach-npm-forrer-0-0-2-package /Users/bach/.npm/forrer/0.0.2/package
+23 verbose lock /Users/bach/.npm/forrer/0.0.2/package /Users/bach/.npm/eadc5fd2-rs-bach-npm-forrer-0-0-2-package.lock
+24 silly lockFile eadc5fd2-rs-bach-npm-forrer-0-0-2-package /Users/bach/.npm/forrer/0.0.2/package
+25 silly lockFile eadc5fd2-rs-bach-npm-forrer-0-0-2-package /Users/bach/.npm/forrer/0.0.2/package
+26 silly lockFile 3a52ce78- .
+27 silly lockFile 3a52ce78- .
+28 silly publish { name: 'forrer',
+28 silly publish   version: '0.0.2',
+28 silly publish   description: 'Transform forEach cycles into for',
+28 silly publish   main: 'src/forrer',
+28 silly publish   bin: { forrer: './forrer' },
+28 silly publish   directories: { example: 'examples', test: 'test' },
+28 silly publish   scripts:
+28 silly publish    { test: 'mocha test/findreturn/*.spec.js && mocha test/forrer/*.spec.js',
+28 silly publish      'make-diffs': './make-diffs.sh' },
+28 silly publish   repository: { type: 'git', url: 'https://github.com/Bacher/forrer.git' },
+28 silly publish   keywords: [ 'code', 'optimization', 'js', 'for', 'forEach' ],
+28 silly publish   author: { name: 'Bacher', email: 'bacherko@gmail.com' },
+28 silly publish   license: 'GPL v2',
+28 silly publish   bugs: { url: 'https://github.com/Bacher/forrer/issues' },
+28 silly publish   homepage: 'https://github.com/Bacher/forrer',
+28 silly publish   dependencies:
+28 silly publish    { colors: '^0.6.2',
+28 silly publish      esprima: '^1.2.2',
+28 silly publish      lodash: '^2.4.1',
+28 silly publish      optimist: '^0.6.1' },
+28 silly publish   devDependencies: { mocha: '^1.21.4' },
+28 silly publish   readme: 'forrer\n======\n\nCLI/Node program for **safe (based of AST tree)** transforming **"forEach"** methods into **"for"** cycles.\n\n### Usage:\n\n#### Bash:\n```\nforrer source.js > processed.js\n```\n\n#### Node.js:\n````javascript\nvar forrer = require(\'./src/forrer\');\n\nvar code = \'arr.forEach(function(a) { console.log(a); });\'\n\nconsole.log(forrer(code));\n````\n\n#### Transformation look like this:\n\n````javascript\narr.forEach(function(a) { console.log(a); });\n````\n````javascript\nfor(var _i=0,a,_m=arr;_i<_m.length;++_i){a=_m[_i]; console.log(a); }\n````\n',
+28 silly publish   readmeFilename: 'README.md',
+28 silly publish   gitHead: '32b3b84924fbf1f6b2c84c9115584888972abdd0',
+28 silly publish   _id: 'forrer@0.0.2',
+28 silly publish   _shasum: '50371ff0684b704792b09dd80084aadd61cd5bfb',
+28 silly publish   _from: '.' }
+29 verbose request where is /forrer
+30 verbose request registry https://registry.npmjs.org/
+31 verbose request id 1b106309671f3677
+32 verbose url raw /forrer
+33 verbose url resolving [ 'https://registry.npmjs.org/', './forrer' ]
+34 verbose url resolved https://registry.npmjs.org/forrer
+35 verbose request where is https://registry.npmjs.org/forrer
+36 info trying registry request attempt 1 at 19:55:52
+37 http PUT https://registry.npmjs.org/forrer
+38 http 403 https://registry.npmjs.org/forrer
+39 verbose headers { date: 'Wed, 27 Aug 2014 15:55:56 GMT',
+39 verbose headers   server: 'CouchDB/1.5.0 (Erlang OTP/R14B04)',
+39 verbose headers   'content-type': 'application/json',
+39 verbose headers   'cache-control': 'max-age=60',
+39 verbose headers   'content-length': '3441',
+39 verbose headers   'accept-ranges': 'bytes',
+39 verbose headers   via: '1.1 varnish',
+39 verbose headers   'x-served-by': 'cache-fra1232-FRA',
+39 verbose headers   'x-cache': 'MISS',
+39 verbose headers   'x-cache-hits': '0',
+39 verbose headers   'x-timer': 'S1409154952.805491,VS0,VE3335',
+39 verbose headers   'keep-alive': 'timeout=10, max=50',
+39 verbose headers   connection: 'Keep-Alive' }
+40 error publish Failed PUT 403
+41 error Error: forbidden cannot modify pre-existing version: 0.0.2
+41 error old={"name":"forrer","version":"0.0.2","description":"Transform forEach cycles into for","main":"src/forrer","directories":{"example":"examples","test":"test"},"scripts":{"test":"mocha test/findreturn/*.spec.js && mocha test/forrer/*.spec.js","make-diffs":"./make-diffs.sh"},"repository":{"type":"git","url":"https://github.com/Bacher/forrer.git"},"keywords":["code","optimization","js","for","forEach"],"author":{"name":"Bacher","email":"bacherko@gmail.com"},"license":"GPL v2","bugs":{"url":"https://github.com/Bacher/forrer/issues"},"homepage":"https://github.com/Bacher/forrer","dependencies":{"colors":"^0.6.2","esprima":"^1.2.2","lodash":"^2.4.1","optimist":"^0.6.1"},"devDependencies":{"mocha":"^1.21.4"},"gitHead":"aabce7ed8dd1b4368b5a75f4af9eb64f5b7d6924","_id":"forrer@0.0.2","_shasum":"a385dcdc1fd425efb2f8b156609811a3d73f6c63","_from":".","_npmVersion":"1.4.23","_npmUser":{"name":"bacher","email":"bacherko@gmail.com"},"maintainers":[{"name":"bacher","email":"bacherko@gmail.com"}],"dist":{"shasum":"a385dcdc1fd425efb2f8b156609811a3d73f6c63","tarball":"http://registry.npmjs.org/forrer/-/forrer-0.0.2.tgz"}}
+41 error new={"name":"forrer","version":"0.0.2","description":"Transform forEach cycles into for","main":"src/forrer","bin":{"forrer":"./forrer"},"directories":{"example":"examples","test":"test"},"scripts":{"test":"mocha test/findreturn/*.spec.js && mocha test/forrer/*.spec.js","make-diffs":"./make-diffs.sh"},"repository":{"type":"git","url":"https://github.com/Bacher/forrer.git"},"keywords":["code","optimization","js","for","forEach"],"author":{"name":"Bacher","email":"bacherko@gmail.com"},"license":"GPL v2","bugs":{"url":"https://github.com/Bacher/forrer/issues"},"homepage":"https://github.com/Bacher/forrer","dependencies":{"colors":"^0.6.2","esprima":"^1.2.2","lodash":"^2.4.1","optimist":"^0.6.1"},"devDependencies":{"mocha":"^1.21.4"},"readme":"forrer\u000a======\u000a\u000aCLI/Node program for **safe (based of AST tree)** transforming **\"forEach\"** methods into **\"for\"** cycles.\u000a\u000a### Usage:\u000a\u000a#### Bash:\u000a```\u000aforrer source.js > processed.js\u000a```\u000a\u000a#### Node.js:\u000a````javascript\u000avar forrer = require('./src/forrer');\u000a\u000avar code = 'arr.forEach(function(a) { console.log(a); });'\u000a\u000aconsole.log(forrer(code));\u000a````\u000a\u000a#### Transformation look like this:\u000a\u000a````javascript\u000aarr.forEach(function(a) { console.log(a); });\u000a````\u000a````javascript\u000afor(var _i=0,a,_m=arr;_i<_m.length;++_i){a=_m[_i]; console.log(a); }\u000a````\u000a","readmeFilename":"README.md","gitHead":"32b3b84924fbf1f6b2c84c9115584888972abdd0","_id":"forrer@0.0.2","_shasum":"50371ff0684b704792b09dd80084aadd61cd5bfb","_from":".","_npmVersion":"1.4.23","_npmUser":{"name":"bacher","email":"bacherko@gmail.com"},"maintainers":[{"name":"bacher","email":"bacherko@gmail.com"}],"dist":{"shasum":"50371ff0684b704792b09dd80084aadd61cd5bfb","tarball":"http://registry.npmjs.org/forrer/-/forrer-0.0.2.tgz"}}: forrer
+41 error     at RegClient.<anonymous> (/Users/bach/local/node/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:300:14)
+41 error     at Request._callback (/Users/bach/local/node/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:238:65)
+41 error     at Request.self.callback (/Users/bach/local/node/lib/node_modules/npm/node_modules/request/request.js:123:22)
+41 error     at Request.emit (events.js:98:17)
+41 error     at Request.<anonymous> (/Users/bach/local/node/lib/node_modules/npm/node_modules/request/request.js:893:14)
+41 error     at Request.emit (events.js:117:20)
+41 error     at IncomingMessage.<anonymous> (/Users/bach/local/node/lib/node_modules/npm/node_modules/request/request.js:844:12)
+41 error     at IncomingMessage.emit (events.js:117:20)
+41 error     at _stream_readable.js:943:16
+41 error     at process._tickCallback (node.js:419:13)
+42 error If you need help, you may report this *entire* log,
+42 error including the npm and node versions, at:
+42 error     <http://github.com/npm/npm/issues>
+43 error System Darwin 13.3.0
+44 error command "/Users/bach/local/node/bin/node" "/Users/bach/local/node/bin/npm" "publish"
+45 error cwd /Users/bach/projects/forrer
+46 error node -v v0.10.31
+47 error npm -v 1.4.23
+48 verbose exit [ 1, true ]

@@ -1,8 +1,11 @@
 {
   "name": "forrer",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Transform forEach cycles into for",
   "main": "src/forrer",
+  "bin": {
+    "forrer": "./forrer"
+  },
   "directories": {
     "example": "examples",
     "test": "test"
@@ -22,7 +25,10 @@
     "for",
     "forEach"
   ],
-  "author": "Bacher <bacherko@gmail.com>",
+  "author": {
+    "name": "Bacher",
+    "email": "bacherko@gmail.com"
+  },
   "license": "GPL v2",
   "bugs": {
     "url": "https://github.com/Bacher/forrer/issues"
