@@ -4,3 +4,4 @@ node_modules/
 
 examples/*_.js
 examples/*.diff
+npm-debug.log

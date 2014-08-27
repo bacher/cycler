@@ -5,7 +5,7 @@ var esprima = require('esprima');
 var FragUtils = require('./fragutils');
 var LexScope = require('./lexscope');
 var getReturnLoc = require('./findreturn');
-var findLocal = require('./findlocal');
+var findNodes = require('./findnodes');
 
 var getFragment = FragUtils.getFragment;
 
@@ -193,16 +193,10 @@ module.exports = function(code) {
 
     function processForEach(node, expr, callee) {
 
-        //logFragment(node);
-        logFragment('expr', expr);
-        logFragment('callee', callee);
-
         var callback = expr.arguments[0];
         var callbackIterVar = callback.params[0].name;
 
         var callbackBody = callback.body;
-
-        logFragment('funcbody', callbackBody);
 
         var arrayIdentifier = getFragment(codeLines, callee.object.loc);
 
@@ -210,11 +204,29 @@ module.exports = function(code) {
 
         var localScope = _.last(lexScopesStack);
 
+        /* Если переменные в функции перекрывают перменные объявленные выше по скопам */
         if (_.intersection(localScope, cycleScope).length) {
             return;
         }
 
-        if (findLocal.parse(callback, 'ThisExpression').length) {
+        /* Если внутри функции используется this */
+        if (findNodes.localParse(callback, 'ThisExpression').length) {
+            return;
+        }
+
+        /* Если внутри функции объявлены замыкания использующие переменные из локального скопа */
+        if (findNodes.localParse(callback, ['FunctionDeclaration', 'FunctionExpression']).some(function(node) {
+            var expresions = [];
+
+            findNodes.parse(node, 'Identifier').forEach(function(expr) {
+                expresions.push(expr.name);
+            });
+
+            if (_.intersection(expresions, cycleScope).length) {
+                return true;
+            }
+
+        })) {
             return;
         }
 

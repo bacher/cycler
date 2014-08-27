@@ -14,5 +14,6 @@ process.stdin.on('readable', function() {
 
 process.stdin.on('end', function() {
     var ast = esprima.parse(jsCode);
-    console.log(JSON.stringify(ast, null, 2));
+    console.log(JSON.stringify(ast));
+    //console.log(JSON.stringify(ast, null, 2));
 });
