@@ -5,7 +5,7 @@ var assert = require('assert');
 var fs = require('fs');
 var forrer = require('../../src/forrer');
 
-describe('simple cases', function() {
+describe('positive cases', function() {
 
     makeTest(1);
     makeTest(2);
@@ -23,6 +23,8 @@ describe('ignore cases', function() {
 
     makeTest(20);
     makeTest(21);
+    makeTest(22);
+    makeTest(23);
 
 });
 

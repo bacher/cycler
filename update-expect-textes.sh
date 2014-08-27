@@ -12,4 +12,5 @@
 
 ./forrer test/forrer/text20.js > test/forrer/text20_expect.js &&
 ./forrer test/forrer/text21.js > test/forrer/text21_expect.js &&
-./forrer test/forrer/text22.js > test/forrer/text22_expect.js
+./forrer test/forrer/text22.js > test/forrer/text22_expect.js &&
+./forrer test/forrer/text23.js > test/forrer/text23_expect.js
