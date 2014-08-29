@@ -178,6 +178,7 @@ function processCode(code) {
                 break;
 
             case 'ThrowStatement':
+            case 'UpdateExpression':
                 parseNode(node.argument);
                 break;
 

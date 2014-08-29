@@ -8,11 +8,13 @@ var findreturn = require('../../src/findreturn');
 //findreturn.verbose = true;
 
 
-describe('simple case', function(){
+describe('simple case', function() {
 
     makeTest(1);
     makeTest(2);
     makeTest(3);
+    makeTest(4);
+    makeTest(5);
 
 });
 
@@ -26,7 +28,7 @@ function makeTest(i) {
             raw: true
         });
 
-        var returns = findreturn(astTree);
+        var returns = findreturn(astTree.body[0].expression.callee.body);
 
         assert.equal(returns.length, 1);
     });

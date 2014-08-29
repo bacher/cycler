@@ -47,9 +47,11 @@ function parse(node) {
                 break;
 
             case 'VariableDeclaration':
-                node.declarations.forEach(function(decl) {
-                    findVars(decl.id);
-                });
+                findVars(node.declarations);
+                break;
+
+            case 'VariableDeclarator':
+                findVars(node.id);
                 break;
 
             case 'ForStatement':
@@ -58,21 +60,15 @@ function parse(node) {
                 break;
 
             case 'WhileStatement':
+            case 'Program':
+            case 'BlockStatement':
+            case 'FunctionExpression':
                 findVars(node.body);
                 break;
 
             case 'IfStatement':
                 findVars(node.consequent);
                 findVars(node.alternate);
-                break;
-
-            case 'Program':
-            case 'BlockStatement':
-                findVars(node.body);
-                break;
-
-            case 'FunctionExpression':
-                findVars(node.body);
                 break;
 
             case 'ExpressionStatement':
@@ -116,6 +112,7 @@ function parse(node) {
             case 'BreakStatement':
             case 'ContinueStatement':
             case 'ObjectExpression':
+            case 'UpdateExpression':
                 break;
 
             default:

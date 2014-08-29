@@ -1,25 +1,23 @@
 
 var _ = require('lodash');
 
+var res = [];
 var level = 0;
 
 var parseNode = function(node) {
 
-    level++;
-
-    var res = [];
-
     if (!node) {
-        debugger
+        return;
     }
 
     if (Array.isArray(node)) {
         node.forEach(function(el) {
-            res.push(parseNode(el));
+            parseNode(el);
         });
-
         return;
     }
+
+    level++;
 
     if (findReturn.verbose) {
         console.log('*', new Array(level * 2).join(' '), node.type);
@@ -30,63 +28,30 @@ var parseNode = function(node) {
         case 'ForStatement':
         case 'WhileStatement':
         case 'BlockStatement':
-
-            [].concat(node.body).forEach(function(node) {
-                res.push(parseNode(node));
-            });
-            break;
-
-        case 'CallExpression':
-            node.arguments.forEach(function(node) {
-                res.push(parseNode(node));
-            });
-
-            // Сюда надо заходить?
-            if (node.callee.type === 'FunctionExpression') {
-                res.push(parseNode(node.callee.body));
-            }
+            parseNode(node.body);
             break;
 
         case 'IfStatement':
-            res.push(parseNode(node.consequent));
-
-            if (node.alternate) {
-                res.push(parseNode(node.alternate));
-            }
+            parseNode(node.consequent);
+            parseNode(node.alternate);
             break;
 
-        case 'VariableDeclaration':
-            node.declarations.forEach(function(node) {
-                res.push(parseNode(node));
-            });
+        case 'TryStatement':
+            parseNode(node.block);
+            parseNode(node.handlers);
+            parseNode(node.finalizer);
             break;
 
-        case 'VariableDeclarator':
-            if (node.init) {
-                res.push(parseNode(node.init));
-            }
+        case 'SwitchStatement':
+            parseNode(node.cases);
             break;
 
-        case 'AssignmentExpression':
-            res.push(parseNode(node.right));
-            break;
-
-        case 'ObjectExpression':
-            node.properties.forEach(function(node) {
-                res.push(parseNode(node));
-            });
-            break;
-
-        case 'Property':
-            res.push(parseNode(node.value));
-            break;
-
-        case 'ExpressionStatement':
-            res.push(parseNode(node.expression));
+        case 'SwitchCase':
+            parseNode(node.consequent);
             break;
 
         case 'ReturnStatement':
-            res = {
+            var ret = {
                 loc: node.loc
             };
 
@@ -95,38 +60,24 @@ var parseNode = function(node) {
                     node.argument.type === 'Literal' ||
                     node.argument.type === 'ObjectExpression') {
 
-                    res.args = node.argument.loc
+                    ret.args = node.argument.loc
                 }
             }
+            res.push(ret);
             break;
-
-        case 'FunctionExpression':
-        case 'FunctionDeclaration':
-        case 'BinaryExpression':
-        case 'MemberExpression':
-        case 'ArrayExpression':
-        case 'Identifier':
-        case 'Literal':
-        case 'UnaryExpression':
-            break;
-
-        default:
-            if (node.type) {
-                console.warn('[FINDRETURN: Unknown node type]', node.type);
-            } else {
-                console.warn('[FINDRETURN: Unknown node]', node);
-            }
     }
 
     level--;
-
-    return res;
-
 };
 
 function findReturn(node) {
     level = 0;
-    return _(parseNode(node)).flatten().compact().value();
+
+    res = [];
+
+    parseNode(node);
+
+    return res;
 }
 
 module.exports = findReturn;

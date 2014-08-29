@@ -1,0 +1,80 @@
+48c48
+<     this._players.forEach(function(player) {
+---
+>     for(var _i=0,player,_m=this._players;_i<_m.length;++_i){player=_m[_i];
+50c50
+<     });
+---
+>     }
+193c193
+<     this._bullets.forEach(function(bullet) {
+---
+>     for(var _i=0,bullet,_m=this._bullets;_i<_m.length;++_i){bullet=_m[_i];
+195c195
+<     });
+---
+>     }
+226c226
+<             that._tanks.forEach(function(otherTank) {
+---
+>             for(var _i=0,otherTank,_m=that._tanks;_i<_m.length;++_i){otherTank=_m[_i];
+229c229
+<                     return;
+---
+>                     continue;
+248c248
+<             });
+---
+>             }
+251c251
+<         that._bullets.forEach(function(bullet) {
+---
+>         for(var _i=0,bullet,_m=that._bullets;_i<_m.length;++_i){bullet=_m[_i];
+254c254
+<                 return;
+---
+>                 continue;
+284c284
+<         });
+---
+>         }
+311c311
+<     bulletsToDestroy.forEach(function(bullet) {
+---
+>     for(var _i=0,bullet,_m=bulletsToDestroy;_i<_m.length;++_i){bullet=_m[_i];
+319c319
+<     });
+---
+>     }
+321c321
+<     this._tanks.forEach(function(tank) {
+---
+>     for(var _i=0,tank,_m=this._tanks;_i<_m.length;++_i){tank=_m[_i];
+325c325
+<     });
+---
+>     }
+342c342
+<     this._players.forEach(function(player) {
+---
+>     for(var _i=0,player,_m=this._players;_i<_m.length;++_i){player=_m[_i];
+352c352
+<     });
+---
+>     }
+354c354
+<     this._bullets.forEach(function(bullet) {
+---
+>     for(var _i=0,bullet,_m=this._bullets;_i<_m.length;++_i){bullet=_m[_i];
+359c359
+<     });
+---
+>     }
+399c399
+<     this._players.forEach(function(player) {
+---
+>     for(var _i=0,player,_m=this._players;_i<_m.length;++_i){player=_m[_i];
+403c403
+<     });
+---
+>     }
