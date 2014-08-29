@@ -24,6 +24,8 @@ module.exports = function(code) {
     return res.code;
 };
 
+var SCOPE_MAKERS = ['Program', 'FunctionExpression', 'FunctionDeclaration'];
+
 function processCode(code) {
 
     var isChanged = false;
@@ -51,143 +53,35 @@ function processCode(code) {
     var lexScopesStack = [];
 
     function parseNode(node) {
-        if (!node) {
-            return;
-        }
 
         if (Array.isArray(node)) {
             node.forEach(function(el) {
                 parseNode(el);
             });
-
             return;
         }
 
-        switch (node.type) {
-            case 'Program':
-                // Глобальный скоп
-                lexScopesStack.push(LexScope.parse(node));
-            case 'ForStatement':
-            case 'WhileStatement':
-            case 'BlockStatement':
-                parseNode(node.body);
-                break;
+        if (!node || !node.type) {
+            return;
+        }
 
-            case 'CallExpression':
-                parseNode(node.arguments);
-                parseNode(node.callee);
-                break;
+        var pushed = false;
 
-            case 'VariableDeclaration':
-                parseNode(node.declarations);
-                break;
+        if (_.contains(SCOPE_MAKERS, node.type)) {
+            lexScopesStack.push(LexScope.parse(node));
+            pushed = true;
+        }
 
-            case 'VariableDeclarator':
-                parseNode(node.init);
-                break;
-
-            case 'AssignmentExpression':
-            case 'LogicalExpression':
-            case 'BinaryExpression':
-                parseNode(node.left);
-                parseNode(node.right);
-                break;
-
-            case 'FunctionExpression':
-            case 'FunctionDeclaration':
-                lexScopesStack.push(LexScope.parse(node));
-
-                parseNode(node.body);
-
-                lexScopesStack.pop();
-                break;
-
-            case 'ObjectExpression':
-                parseNode(node.properties);
-                break;
-
-            case 'Property':
-                parseNode(node.value);
-                break;
-
-            case 'ExpressionStatement':
-                if (!checkForEach(node)) {
-                    parseNode(node.expression);
+        if (node.type !== 'ExpressionStatement' || !checkForEach(node)) {
+            for (var prop in node) {
+                if (node.hasOwnProperty(prop) && prop !== 'type' && prop !== 'loc') {
+                    parseNode(node[prop]);
                 }
-                break;
+            }
+        }
 
-            case 'MemberExpression':
-                parseNode(node.object);
-                break;
-
-            case 'IfStatement':
-                parseNode(node.test);
-                parseNode(node.consequent);
-                parseNode(node.alternate);
-                break;
-
-            case 'UnaryExpression':
-            case 'ReturnStatement':
-                parseNode(node.argument);
-                break;
-
-            case 'ThisExpression':
-            case 'Identifier':
-            case 'Literal':
-                break;
-
-            case 'ArrayExpression':
-                parseNode(node.elements);
-                break;
-
-            case 'ConditionalExpression':
-                parseNode(node.test);
-                parseNode(node.left);
-                parseNode(node.right);
-                break;
-
-            case 'TryStatement':
-                parseNode(node.block);
-                parseNode(node.handlers);
-                parseNode(node.finalizer);
-                break;
-
-            case 'CatchClause':
-                parseNode(node.param);
-                parseNode(node.body);
-                break;
-
-            case 'ForInStatement':
-                parseNode(node.left);
-                parseNode(node.right);
-                parseNode(node.body);
-                break;
-
-            case 'SwitchStatement':
-                parseNode(node.discriminant);
-                parseNode(node.cases);
-                break;
-
-            case 'SwitchCase':
-                parseNode(node.consequent);
-                break;
-
-            case 'NewExpression':
-                parseNode(node.callee);
-                parseNode(node.arguments);
-                break;
-
-            case 'ThrowStatement':
-            case 'UpdateExpression':
-                parseNode(node.argument);
-                break;
-
-            case 'ContinueStatement':
-            case 'BreakStatement':
-                break;
-
-            default:
-                console.warn('[FORRER: Unknown node type]', node.type);
+        if (pushed) {
+            lexScopesStack.pop();
         }
     }
 

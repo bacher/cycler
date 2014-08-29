@@ -71,10 +71,6 @@ function parse(node) {
                 findVars(node.alternate);
                 break;
 
-            case 'ExpressionStatement':
-                findVars(node.expression);
-                break;
-
             case 'TryStatement':
                 findVars(node.block);
                 findVars(node.handlers);
@@ -113,6 +109,7 @@ function parse(node) {
             case 'ContinueStatement':
             case 'ObjectExpression':
             case 'UpdateExpression':
+            case 'ExpressionStatement':
                 break;
 
             default:
