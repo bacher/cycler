@@ -1,6 +1,6 @@
 {
   "name": "forrer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Transform forEach cycles into for",
   "main": "src/forrer",
   "bin": {
