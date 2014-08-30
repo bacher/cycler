@@ -200,7 +200,7 @@ function processCode(code) {
 
         functionBody = lines.join('\n');
 
-        var iterDeclaration = (callbackIterVar ? + callbackIterVar + ',' : '');
+        var iterDeclaration = (callbackIterVar ? callbackIterVar + ',' : '');
 
         var declarationSection = 'var ' + iter + '=0,' + iterDeclaration + arrayAlias + '=' + arrayIdentifier;
         var conditionSection = iter + '<' + arrayAlias + '.length';
