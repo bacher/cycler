@@ -1,11 +1,11 @@
 
 (function() {
-    for(var _i=0,el,_m=window.arr;_i<_m.length;++_i){el=_m[_i];
+    for(var _i=0,NaN,_m=window.arr;_i<_m.length;++_i){el=_m[_i];
         console.log(1);
 
         if (el) {
 
-            for(var __i=0,su,__m=window.arr2;__i<__m.length;++__i){su=__m[__i];
+            for(var __i=0,NaN,__m=window.arr2;__i<__m.length;++__i){su=__m[__i];
                 console.log(su);
             }
 

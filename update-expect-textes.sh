@@ -9,8 +9,11 @@
 ./forrer test/forrer/text7.js > test/forrer/text7_expect.js &&
 ./forrer test/forrer/text8.js > test/forrer/text8_expect.js &&
 ./forrer test/forrer/text9.js > test/forrer/text9_expect.js &&
+./forrer test/forrer/text10.js > test/forrer/text10_expect.js &&
 
 ./forrer test/forrer/text20.js > test/forrer/text20_expect.js &&
 ./forrer test/forrer/text21.js > test/forrer/text21_expect.js &&
 ./forrer test/forrer/text22.js > test/forrer/text22_expect.js &&
-./forrer test/forrer/text23.js > test/forrer/text23_expect.js
+./forrer test/forrer/text23.js > test/forrer/text23_expect.js &&
+./forrer test/forrer/text24.js > test/forrer/text24_expect.js &&
+./forrer test/forrer/text25.js > test/forrer/text25_expect.js

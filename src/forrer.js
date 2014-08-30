@@ -104,8 +104,12 @@ function processCode(code) {
 
     function processForEach(node, expr, callee) {
 
+        var callbackIterVar = '';
+
         var callback = expr.arguments[0];
-        var callbackIterVar = callback.params[0].name;
+        if (callback.params.length) {
+            callbackIterVar = callback.params[0].name;
+        }
 
         var callbackBody = callback.body;
 
@@ -196,9 +200,16 @@ function processCode(code) {
 
         functionBody = lines.join('\n');
 
-        var res =
-            'for(var ' + iter + '=0,' + callbackIterVar + ',' + arrayAlias + '=' + arrayIdentifier + ';' + iter + '<' + arrayAlias + '.length;++' + iter + ')' +
-            '{' + callbackIterVar + '=' + arrayAlias + '[' + iter + '];';
+        var iterDeclaration = (callbackIterVar ? + callbackIterVar + ',' : '');
+
+        var declarationSection = 'var ' + iter + '=0,' + iterDeclaration + arrayAlias + '=' + arrayIdentifier;
+        var conditionSection = iter + '<' + arrayAlias + '.length';
+        var iteratorSection = '++' + iter;
+
+        var res = 'for(' + declarationSection + ';' + conditionSection + ';' + iteratorSection + '){';
+        if (callbackIterVar) {
+            res += callbackIterVar + '=' + arrayAlias + '[' + iter + '];';
+        }
         res += functionBody;
 
         outputFile += getFragment(codeLines, {

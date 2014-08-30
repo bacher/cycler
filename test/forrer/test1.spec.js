@@ -16,6 +16,7 @@ describe('positive cases', function() {
     makeTest(7);
     makeTest(8);
     makeTest(9);
+    makeTest(10);
 
 });
 
@@ -25,6 +26,8 @@ describe('ignore cases', function() {
     makeTest(21);
     makeTest(22);
     makeTest(23);
+    makeTest(24);
+    makeTest(25);
 
 });
 
