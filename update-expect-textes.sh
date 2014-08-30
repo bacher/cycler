@@ -1,19 +1,19 @@
 #!/usr/bin/env sh
 
-./forrer test/forrer/text1.js > test/forrer/text1_expect.js &&
-./forrer test/forrer/text2.js > test/forrer/text2_expect.js &&
-./forrer test/forrer/text3.js > test/forrer/text3_expect.js &&
-./forrer test/forrer/text4.js > test/forrer/text4_expect.js &&
-./forrer test/forrer/text5.js > test/forrer/text5_expect.js &&
-./forrer test/forrer/text6.js > test/forrer/text6_expect.js &&
-./forrer test/forrer/text7.js > test/forrer/text7_expect.js &&
-./forrer test/forrer/text8.js > test/forrer/text8_expect.js &&
-./forrer test/forrer/text9.js > test/forrer/text9_expect.js &&
-./forrer test/forrer/text10.js > test/forrer/text10_expect.js &&
+./forrer test/forrer/positive/text1.js > test/forrer/positive/text1.js_e.js &&
+./forrer test/forrer/positive/text2.js > test/forrer/positive/text2.js_e.js &&
+./forrer test/forrer/positive/text3.js > test/forrer/positive/text3.js_e.js &&
+./forrer test/forrer/positive/text4.js > test/forrer/positive/text4.js_e.js &&
+./forrer test/forrer/positive/text5.js > test/forrer/positive/text5.js_e.js &&
+./forrer test/forrer/positive/text6.js > test/forrer/positive/text6.js_e.js &&
+./forrer test/forrer/positive/text7.js > test/forrer/positive/text7.js_e.js &&
+./forrer test/forrer/positive/text8.js > test/forrer/positive/text8.js_e.js &&
+./forrer test/forrer/positive/text9.js > test/forrer/positive/text9.js_e.js &&
+./forrer test/forrer/positive/text10.js > test/forrer/positive/text10.js_e.js &&
 
-./forrer test/forrer/text20.js > test/forrer/text20_expect.js &&
-./forrer test/forrer/text21.js > test/forrer/text21_expect.js &&
-./forrer test/forrer/text22.js > test/forrer/text22_expect.js &&
-./forrer test/forrer/text23.js > test/forrer/text23_expect.js &&
-./forrer test/forrer/text24.js > test/forrer/text24_expect.js &&
-./forrer test/forrer/text25.js > test/forrer/text25_expect.js
+./forrer test/forrer/negative/text1.js > test/forrer/negative/text1.js_e.js &&
+./forrer test/forrer/negative/text2.js > test/forrer/negative/text2.js_e.js &&
+./forrer test/forrer/negative/text3.js > test/forrer/negative/text3.js_e.js &&
+./forrer test/forrer/negative/text4.js > test/forrer/negative/text4.js_e.js &&
+./forrer test/forrer/negative/text5.js > test/forrer/negative/text5.js_e.js &&
+./forrer test/forrer/negative/text6.js > test/forrer/negative/text6.js_e.js
