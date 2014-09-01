@@ -18,11 +18,11 @@ function parse(node) {
         });
     }
 
-    findVars(node);
+    findVars(node, true);
 
     return vars;
 
-    function findVars(node) {
+    function findVars(node, isRoot) {
         if (!node) {
             return;
         }
@@ -60,9 +60,7 @@ function parse(node) {
                 break;
 
             case 'WhileStatement':
-            case 'Program':
             case 'BlockStatement':
-            case 'FunctionExpression':
                 findVars(node.body);
                 break;
 
@@ -82,8 +80,20 @@ function parse(node) {
                 findVars(node.body);
                 break;
 
+            case 'Program':
+                if (isRoot) {
+                    findVars(node.body);
+                }
+                break;
+
+            case 'FunctionExpression':
             case 'FunctionDeclaration':
-                findVars(node.id);
+                if (isRoot) {
+                    findVars(node.params);
+                    findVars(node.body);
+                } else {
+                    findVars(node.id);
+                }
                 break;
 
             case 'SwitchStatement':

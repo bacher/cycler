@@ -119,7 +119,7 @@ function processCode(code) {
 
         var localScope = _.last(lexScopesStack);
 
-        /* Если переменные в функции перекрывают перменные объявленные выше по скопам */
+        /* Если переменные в функции перекрывают переменные объявленные выше по скопам */
         if (_.intersection(localScope, cycleScope).length) {
             return;
         }
