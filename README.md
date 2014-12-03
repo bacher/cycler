@@ -28,3 +28,6 @@ into
 ````javascript
 for(var _i=0,a,_m=arr;_i<_m.length;++_i){a=_m[_i]; console.log(a); }
 ````
+
+#### You can see diff for source file in examples folders `examples/gamelogic.js`:
+https://github.com/Bacher/cycler/blob/master/examples/gamelogic.diff
