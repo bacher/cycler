@@ -1,4 +1,4 @@
-forrer
+cycler
 ======
 
 CLI/Node program for **safe (based of AST tree)** transforming **"forEach"** methods into **"for"** cycles.
@@ -14,16 +14,17 @@ forrer source.js > processed.js
 ````javascript
 var forrer = require('./src/forrer');
 
-var code = 'arr.forEach(function(a) { console.log(a); });'
+var code = 'arr.forEach(function(a) { console.log(a); });';
 
 console.log(forrer(code));
 ````
 
-#### Transformation look like this:
+#### Transformation look like:
 
 ````javascript
 arr.forEach(function(a) { console.log(a); });
 ````
+into
 ````javascript
 for(var _i=0,a,_m=arr;_i<_m.length;++_i){a=_m[_i]; console.log(a); }
 ````
